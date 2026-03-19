@@ -175,7 +175,7 @@ function ActiveConfig({ settings, onSave }) {
               onChange={(e) => handleModelChange(e.target.value)}
               className="w-48 rounded-md border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground"
             >
-              {selectedBuiltin.models.map((m) => (
+              {selectedBuiltin.models.filter((m) => m.chat !== false).map((m) => (
                 <option key={m.id} value={m.id}>{m.name}</option>
               ))}
             </select>
@@ -325,7 +325,7 @@ export function ChatProvidersPage() {
 
       {/* Custom providers */}
       <div className="space-y-8">
-        <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Custom</h4>
+        <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Custom (OpenAI Compatible API)</h4>
 
         {settings?.customProviders?.map((cp) => (
           <CustomProviderCard
@@ -341,7 +341,7 @@ export function ChatProvidersPage() {
           className="w-full rounded-lg border border-dashed p-4 text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors flex items-center justify-center gap-2"
         >
           <PlusIcon size={14} />
-          Add Custom Provider
+          Add OpenAI Compatible API
         </button>
       </div>
 
@@ -682,7 +682,7 @@ function CustomProviderDialog({ open, initial, onSave, onCancel }) {
   };
 
   return (
-    <Dialog open={open} onClose={onCancel} title={initial ? 'Edit Provider' : 'Add Custom Provider'}>
+    <Dialog open={open} onClose={onCancel} title={initial ? 'Edit Provider' : 'Add OpenAI Compatible API'}>
       <div className="space-y-3">
         <div>
           <label className="text-xs font-medium mb-1 block">Name</label>
@@ -823,7 +823,7 @@ export function ChatLlmPage() {
         )}
 
         <div className="space-y-8">
-          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Custom</h4>
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Custom (OpenAI Compatible API)</h4>
           {settings?.customProviders?.map((cp) => (
             <CustomProviderCard key={cp.key} provider={cp} onEdit={openEdit} onRemove={handleRemoveCustom} />
           ))}
@@ -832,7 +832,7 @@ export function ChatLlmPage() {
             className="w-full rounded-lg border border-dashed p-4 text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors flex items-center justify-center gap-2"
           >
             <PlusIcon size={14} />
-            Add Custom Provider
+            Add OpenAI Compatible API
           </button>
         </div>
 

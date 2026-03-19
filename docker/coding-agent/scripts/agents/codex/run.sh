@@ -2,14 +2,14 @@
 # Run Codex CLI headlessly with the given PROMPT
 # Sets AGENT_EXIT for downstream scripts (commit, push, etc.)
 
-CODEX_ARGS=(exec "$PROMPT" --json --full-auto)
+CODEX_ARGS=(exec "$PROMPT" --json --dangerously-bypass-approvals-and-sandbox)
 
 if [ -n "$LLM_MODEL" ]; then
     CODEX_ARGS+=(--model "$LLM_MODEL")
 fi
 
 if [ "$CONTINUE_SESSION" = "1" ]; then
-    CODEX_ARGS=(exec resume --last "$PROMPT" --json --full-auto)
+    CODEX_ARGS=(exec resume --last "$PROMPT" --json --dangerously-bypass-approvals-and-sandbox)
     if [ -n "$LLM_MODEL" ]; then
         CODEX_ARGS+=(--model "$LLM_MODEL")
     fi

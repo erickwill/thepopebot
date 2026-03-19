@@ -1,8 +1,8 @@
 #!/bin/bash
-# Codex CLI auth — write OAuth token to auth.json or use API key
+# Codex CLI auth — credentials cached in ~/.codex/auth.json
+# Codex does NOT read OPENAI_API_KEY from env, must use `codex login`
 if [ -n "$CODEX_OAUTH_TOKEN" ]; then
-    mkdir -p ~/.codex
-    echo "$CODEX_OAUTH_TOKEN" > ~/.codex/auth.json
-    unset CODEX_API_KEY
+    echo "$CODEX_OAUTH_TOKEN" | codex login --with-api-key
+elif [ -n "$OPENAI_API_KEY" ]; then
+    echo "$OPENAI_API_KEY" | codex login --with-api-key
 fi
-# Otherwise CODEX_API_KEY stays in env and Codex uses it directly
