@@ -12,6 +12,6 @@ fi
 export PERMISSION=code
 
 set +e
-source /scripts/agents/${AGENT}/run.sh
+source /scripts/agents/${AGENT}/run.sh > "${LOG_DIR}/claude-session.jsonl" 2>"${LOG_DIR}/claude-stderr.log"
 # AGENT_EXIT is set by the agent's run.sh
 set -e
