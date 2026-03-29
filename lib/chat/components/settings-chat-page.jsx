@@ -156,27 +156,25 @@ function ActiveConfig({ settings, onSave }) {
 
   return (
     <div className="rounded-lg border bg-card p-4">
-      {(saving || saved) && (
-        <div className="flex justify-end mb-2">
-          {saving && <span className="text-xs text-muted-foreground">Saving...</span>}
-          {saved && <span className="text-xs text-green-500 inline-flex items-center gap-1"><CheckIcon size={12} /> Saved</span>}
-        </div>
-      )}
       <div className="divide-y divide-border">
         <div className="flex items-center justify-between py-3 first:pt-0">
           <label className="text-sm font-medium shrink-0">Provider</label>
-          <select
-            value={provider}
-            onChange={(e) => handleProviderChange(e.target.value)}
-            className="w-48 rounded-md border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground"
-          >
-            {availableProviders.map((p) => (
-              <option key={p.slug} value={p.slug}>{p.name}</option>
-            ))}
-            {availableProviders.length === 0 && (
-              <option value="" disabled>No providers configured</option>
-            )}
-          </select>
+          <div className="flex items-center gap-2">
+            {saving && <span className="text-xs text-muted-foreground">Saving...</span>}
+            {saved && <span className="text-xs text-green-500 inline-flex items-center gap-1"><CheckIcon size={12} /> Saved</span>}
+            <select
+              value={provider}
+              onChange={(e) => handleProviderChange(e.target.value)}
+              className="w-48 rounded-md border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground"
+            >
+              {availableProviders.map((p) => (
+                <option key={p.slug} value={p.slug}>{p.name}</option>
+              ))}
+              {availableProviders.length === 0 && (
+                <option value="" disabled>No providers configured</option>
+              )}
+            </select>
+          </div>
         </div>
 
         <div className="flex items-center justify-between py-3">

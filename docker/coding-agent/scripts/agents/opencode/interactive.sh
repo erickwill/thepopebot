@@ -7,7 +7,7 @@ if [ -n "$LLM_MODEL" ]; then
     OPENCODE_ARGS="$OPENCODE_ARGS --model $LLM_MODEL"
 fi
 if [ "$CONTINUE_SESSION" = "1" ]; then
-    OPENCODE_ARGS="$OPENCODE_ARGS tui --continue"
+    OPENCODE_ARGS="$OPENCODE_ARGS --continue"
 fi
 
 tmux -u new-session -d -s opencode "$OPENCODE_ARGS"

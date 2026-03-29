@@ -69,7 +69,7 @@ export function ChatInput({ input, setInput, onSubmit, status, stop, files, setF
     const textarea = textareaRef.current;
     if (!textarea) return;
     textarea.style.height = 'auto';
-    textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
+    textarea.style.height = `${textarea.scrollHeight}px`;
   }, []);
 
   useEffect(() => {
@@ -229,7 +229,7 @@ export function ChatInput({ input, setInput, onSubmit, status, stop, files, setF
             className={cn(
               'w-full resize-none bg-transparent px-2 py-1.5 text-sm text-foreground',
               'placeholder:text-muted-foreground focus:outline-none',
-              'max-h-[200px]'
+              'min-h-[84px] md:min-h-0 max-h-[40vh] md:max-h-[200px]'
             )}
             disabled={isStreaming}
           />
