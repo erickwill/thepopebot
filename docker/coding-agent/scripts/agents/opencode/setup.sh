@@ -45,10 +45,16 @@ export const SessionTracker = async ({ $ }) => {
 }
 PLUGIN
 
-# OpenCode config: register plugin + Playwright MCP
+# OpenCode config: register plugin
 cat > "${WORKSPACE_DIR}/.opencode/opencode.jsonc" << 'EOF'
 {
-  "plugin": ["./plugins"],
+  "plugin": ["./plugins"]
+}
+EOF
+
+# Register Playwright MCP server for browser automation
+cat > "${WORKSPACE_DIR}/.opencode.json" << 'EOF'
+{
   "mcpServers": {
     "playwright": {
       "type": "stdio",
@@ -59,6 +65,3 @@ cat > "${WORKSPACE_DIR}/.opencode/opencode.jsonc" << 'EOF'
   }
 }
 EOF
-
-# Remove old root-level config if it exists
-rm -f "${WORKSPACE_DIR}/.opencode.json"

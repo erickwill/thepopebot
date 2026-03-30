@@ -277,8 +277,7 @@ function buildDockerImage(projectPath) {
   fs.cpSync(webSrc, webDest, { recursive: true });
 
   try {
-    // Build using stdin Dockerfile with project dir as context (no cache to ensure fresh package)
-    execSync(`docker build --no-cache -f - -t ${imageTag} .`, {
+    execSync(`docker build -f - -t ${imageTag} .`, {
       input: dockerfile,
       stdio: ['pipe', 'inherit', 'inherit'],
       cwd: projectPath,
@@ -286,6 +285,12 @@ function buildDockerImage(projectPath) {
   } finally {
     fs.rmSync(webDest, { recursive: true, force: true });
   }
+
+  // Clean up dangling images from previous builds
+  try {
+    execSync('docker image prune -f', { stdio: 'ignore' });
+  } catch {}
+
 
   // Update THEPOPEBOT_VERSION in .env
   const envPath = path.join(projectPath, '.env');
