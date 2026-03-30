@@ -18,7 +18,7 @@ thepopebot uses a two-layer architecture:
 │           ▼                                                          │
 │  ┌─────────────────┐                                                 │
 │  │  Docker Agent   │                                                 │
-│  │(Claude Code/Pi) │                                                 │
+│  │ (coding agent)  │                                                 │
 │  └────────┬────────┘                                                 │
 │           │                                                          │
 │           │  3 (commits, pushes, creates PR)                         │
@@ -72,12 +72,9 @@ This is the user project structure after running `npx thepopebot init`:
 │   ├── HEARTBEAT.md               # Self-monitoring
 │   ├── CRONS.json                 # Scheduled jobs
 │   └── TRIGGERS.json              # Webhook trigger definitions
-├── app/
-│   ├── layout.js
-│   ├── page.js
-│   ├── api/[...thepopebot]/       # Catch-all API route
-│   └── stream/chat/               # Chat streaming route
 ├── docker-compose.yml             # Production deployment (Traefik + event handler)
+├── data/                          # SQLite database and cluster data
+├── docs/                          # Project documentation
 ├── middleware.js                   # Auth middleware (re-exports from thepopebot)
 ├── cron/                          # Working dir for command-type cron jobs
 ├── triggers/                      # Working dir for command-type trigger scripts
@@ -177,9 +174,11 @@ curl -X POST https://your-app-url/api/telegram/register \
 
 The container executes tasks autonomously using a coding agent (Claude Code, Pi, etc.). A unified base image supports multiple runtimes and agents. The agent is selected via the `CODING_AGENT` config.
 
+**Supported backends:** Claude Code (default), Pi, Gemini CLI, Codex CLI, OpenCode. Configure at Admin > Event Handler > Coding Agents. See [Coding Agents](CODING_AGENTS.md) for details.
+
 **Container includes:**
 - Node.js 22
-- Selected coding agent (Claude Code, Pi, etc.)
+- Selected coding agent (Claude Code, Pi, Gemini CLI, Codex CLI, or OpenCode)
 - Playwright + Chromium (headless browser)
 - Git + GitHub CLI
 

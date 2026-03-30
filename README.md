@@ -30,7 +30,7 @@ Build autonomous AI agents that work for you 24/7, individually or in teams.
 │           ▼                                                          │
 │  ┌─────────────────┐                                                 │
 │  │  Docker Agent   │                                                 │
-│  │(Claude Code/Pi) │                                                 │
+│  │ (coding agent)  │                                                 │
 │  └────────┬────────┘                                                 │
 │           │                                                          │
 │           │  3 (commits, pushes, creates PR)                         │
@@ -94,13 +94,12 @@ npm run setup
 ```
 
 The wizard walks you through everything:
-- Checks prerequisites (Node.js, Git, GitHub CLI)
+- Checks prerequisites (Node.js, Git, GitHub CLI, Docker)
 - Creates a GitHub repository and pushes your initial commit
 - Creates a GitHub Personal Access Token (scoped to your repo)
-- Collects API keys (Anthropic required; OpenAI, Brave optional)
-- Sets GitHub repository secrets and variables
-- Generates `.env`
-- Builds the project and starts Docker for you
+- Configures your public URL and webhook secret
+- Syncs settings to `.env`, database, and GitHub secrets/variables
+- Starts Docker for you
 
 **That's it.** Visit your APP_URL when the wizard finishes.
 
@@ -135,7 +134,7 @@ claude setup-token
 
 Paste the token (starts with `sk-ant-oat01-`) into the setup wizard. Your agent jobs will now run through your subscription. Note that usage counts toward your Claude.ai limits, and you still need an API key for the chat side.
 
-See [Claude Code vs Pi](docs/CLAUDE_CODE_VS_PI.md) for more details on the two agent backends.
+See [Coding Agents](docs/CODING_AGENTS.md) for details on all five agent backends.
 
 > **Local installs**: Your server needs to be reachable from the internet for GitHub webhooks and Telegram. On a VPS/cloud server, your APP_URL is just your domain. For local development, use [ngrok](https://ngrok.com) (`ngrok http 80`) or port forwarding to expose your machine.
 >
@@ -187,9 +186,9 @@ See [Security](docs/SECURITY.md) for full details on what's exposed, the risks, 
 
 ## Different Models
 
-The Event Handler (chat, Telegram, webhooks) and Jobs (Docker agent) are two independent layers — each can run a different LLM. Use Claude for interactive chat and a cheaper or local model for long-running jobs, mix providers per cron entry, or run everything on a single model.
+thepopebot supports 9 built-in LLM providers (Anthropic, OpenAI, Google, DeepSeek, MiniMax, Mistral, xAI, Kimi, OpenRouter) plus custom OpenAI-compatible endpoints. The chat layer and coding agents are independent — use Claude for interactive chat and a different model for code tasks, or run everything on a single provider.
 
-See [Different Models](docs/RUNNING_DIFFERENT_MODELS.md) for the full guide: Event Handler config, job defaults, per-job overrides, provider table, and custom provider setup.
+See [Different Models](docs/RUNNING_DIFFERENT_MODELS.md) for the full provider reference, admin UI configuration, per-job overrides, and custom provider setup.
 
 ---
 
@@ -199,13 +198,13 @@ See [Different Models](docs/RUNNING_DIFFERENT_MODELS.md) for the full guide: Eve
 |----------|-------------|
 | [Architecture](docs/ARCHITECTURE.md) | Two-layer design, file structure, API endpoints, GitHub Actions, Docker agent |
 | [CLI Reference](docs/CLI.md) | `init`, managed vs user files, template conventions, all CLI commands |
-| [Configuration](docs/CONFIGURATION.md) | Environment variables, GitHub secrets, repo variables, ngrok, Telegram setup |
+| [Configuration](docs/CONFIGURATION.md) | Admin UI, DB-backed config, infrastructure variables, GitHub secrets, Docker Compose |
 | [Customization](docs/CUSTOMIZATION.md) | Personality, skills, operating system files, using your bot, security details |
 | [Chat Integrations](docs/CHAT_INTEGRATIONS.md) | Web chat, Telegram, adding new channels |
-| [Different Models](docs/RUNNING_DIFFERENT_MODELS.md) | Event Handler vs job model config, per-job overrides, providers, custom provider |
+| [Different Models](docs/RUNNING_DIFFERENT_MODELS.md) | 9 built-in LLM providers, chat vs coding agent config, per-job overrides, custom providers |
 | [Auto-Merge](docs/AUTO_MERGE.md) | Auto-merge controls, ALLOWED_PATHS configuration |
 | [Deployment](docs/DEPLOYMENT.md) | VPS setup, Docker Compose, HTTPS with Let's Encrypt |
-| [Claude Code vs Pi](docs/CLAUDE_CODE_VS_PI.md) | Comparing the two agent backends (subscription vs API credits) |
+| [Coding Agents](docs/CODING_AGENTS.md) | 5 coding agent backends, OAuth tokens, LiteLLM proxy, per-agent config |
 | [How to Build Skills](docs/HOW_TO_BUILD_SKILLS.md) | Guide to building and activating agent skills |
 | [Pre-Release](docs/PRE_RELEASE.md) | Installing beta/alpha builds |
 | [Code Workspaces](docs/CODE_WORKSPACES.md) | Interactive Docker containers with in-browser terminal |

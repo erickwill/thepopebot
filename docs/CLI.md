@@ -10,7 +10,7 @@ When you ran `thepopebot init` the first time, it scaffolded a project folder wi
 
 | Files | What they do |
 |-------|-------------|
-| `config/SOUL.md`, `JOB_PLANNING.md`, `JOB_AGENT.md`, etc. | Your agent's personality, behavior, and prompts |
+| `config/agent-job/SOUL.md`, `AGENT_JOB.md`, `SUMMARY.md`, etc. | Your agent's personality, behavior, and prompts |
 | `config/CRONS.json`, `TRIGGERS.json` | Your scheduled jobs and webhook triggers |
 
 **Managed files** — These are infrastructure files that need to stay in sync with the package version. `init` auto-updates them for you:
@@ -19,9 +19,8 @@ When you ran `thepopebot init` the first time, it scaffolded a project folder wi
 |-------|-------------|
 | `.github/workflows/` | GitHub Actions that run jobs, auto-merge PRs, rebuild on deploy |
 | `docker-compose.yml` | Defines how your containers run together (Traefik, event handler, runner) |
-| `docker/event-handler/` | The Dockerfile for the event handler container |
 | `.dockerignore` | Keeps unnecessary files out of Docker builds |
-| `app/` | Next.js pages, layouts, and routes |
+| `.gitignore` | Git ignore rules |
 | `CLAUDE.md` | AI assistant context for your project |
 
 ### What happens when you run `init`
@@ -101,4 +100,4 @@ These commands set individual GitHub repository secrets/variables using the `gh`
 |---------|-------------|
 | `set-var KEY [VALUE]` | Set a GitHub repository variable |
 
-Agent job secrets are now managed through the admin UI (Settings > Agent Jobs > Secrets), stored encrypted in SQLite, and injected directly into Docker containers.
+Agent job secrets are managed at Admin > Event Handler > Agent Jobs, stored encrypted in SQLite, and injected directly into Docker containers.

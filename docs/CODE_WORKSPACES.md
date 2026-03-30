@@ -44,7 +44,7 @@ The toolbar at the bottom of the Claude Code tab provides quick actions:
 
 ### Startup
 
-When a workspace is created, a Docker container is launched from the `coding-agent-claude-code` image (interactive runtime). The container:
+When a workspace is created, a Docker container is launched from the selected coding agent's Docker image (interactive runtime). The container:
 
 - Clones your repository and checks out the specified branch
 - Creates a feature branch if one was requested
@@ -58,6 +58,12 @@ Workspace data is stored in a Docker named volume. If the container stops or cra
 - **Stopped or paused containers** are restarted
 - **Dead or missing containers** are recreated with the same volume, preserving your work
 - The browser client automatically attempts to reconnect and will trigger container recovery if needed
+
+### Session Persistence
+
+Terminal sessions run inside tmux, which means they survive browser disconnects. If you close your browser tab and reopen the workspace, your terminal state is preserved — running processes, command history, and output are all still there.
+
+The workspace also supports OSC 52 clipboard integration for copying text from the terminal to your system clipboard.
 
 ### Closing a Session
 
@@ -102,6 +108,6 @@ Code workspaces require:
 
 - **Docker** — The event handler needs access to the Docker socket (`/var/run/docker.sock`)
 - **`GH_TOKEN`** — A GitHub token for cloning repositories
-- **`CLAUDE_CODE_OAUTH_TOKEN`** — Authentication token for Claude Code inside the container
+- **Coding agent credentials** — OAuth token or API key for your selected coding agent, configured at Admin > Event Handler > Coding Agents
 
-These are configured during initial setup. No additional workspace-specific configuration is needed.
+These are configured during initial setup. See [Coding Agents](CODING_AGENTS.md) for details on the five supported backends and their auth modes.

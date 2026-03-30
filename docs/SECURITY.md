@@ -11,7 +11,8 @@ thepopebot includes several security measures by default:
 - **Code workspace WebSocket authentication** — WebSocket upgrade requests for code workspace terminals validate the session by decoding the `authjs.session-token` cookie using `next-auth/jwt`. Unauthenticated upgrade requests are rejected with 401.
 - **Secret filtering in Docker agent** — The `env-sanitizer` extension filters `AGENT_*` secrets from the LLM's bash subprocess, preventing the agent from accessing protected credentials.
 - **Auto-merge path restrictions** — The `auto-merge.yml` workflow only merges PRs where all changed files fall within `ALLOWED_PATHS` (default: `/logs`). Changes outside allowed paths require manual review.
-- **Server Actions with session checks** — All browser-to-server mutations use Next.js Server Actions with `requireAuth()`, which validates the session cookie before executing.
+- **Authenticated fetch route handlers with `auth()` session checks** — All browser-to-server mutations use Next.js fetch route handlers that validate the session cookie before executing.
+- **Encrypted config storage** — API keys and secrets stored with AES-256-GCM encryption in SQLite, using AUTH_SECRET for key derivation
 
 ## Disclaimer
 
