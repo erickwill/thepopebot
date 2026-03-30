@@ -10,4 +10,4 @@ RUN mkdir -p /home/coding-agent/.codex \
 
 USER coding-agent
 
-ENV AGENT=codex
+ENV AGENT=codex-cli

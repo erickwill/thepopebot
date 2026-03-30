@@ -11,4 +11,4 @@ RUN mkdir -p /home/coding-agent/.pi/agent \
 
 USER coding-agent
 
-ENV AGENT=pi
+ENV AGENT=pi-coding-agent

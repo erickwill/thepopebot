@@ -14,7 +14,7 @@ if [ -n "$CUSTOM_OPENAI_BASE_URL" ]; then
 fi
 
 if [ "$CONTINUE_SESSION" = "1" ]; then
-    PI_ARGS+=(-c)
+    PI_ARGS+=(--session-dir /home/coding-agent/.pi-ttyd-sessions/7681 -c)
 fi
 
 set +e

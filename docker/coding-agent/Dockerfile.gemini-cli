@@ -10,4 +10,4 @@ RUN mkdir -p /home/coding-agent/.gemini \
 
 USER coding-agent
 
-ENV AGENT=gemini
+ENV AGENT=gemini-cli
