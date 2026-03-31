@@ -306,6 +306,82 @@ function buildDockerImage(projectPath) {
   }
 }
 
+/**
+ * Fast sync — skip Docker image rebuild entirely.
+ *
+ *   1. Build package JSX (npm run build)
+ *   2. mirrorTemplates() — scaffold using init's managed-path logic
+ *   3. docker cp package source (lib/, api/, config/, package.json) into
+ *      the running container's /app/node_modules/thepopebot/
+ *   4. docker cp web/app/ + web/postcss.config.mjs into container
+ *   5. docker exec next build inside the container (tailwindcss already there)
+ *   6. Clean up copied source from container
+ *   7. docker exec pm2 restart all
+ */
+export async function syncFast(projectPath) {
+  if (!projectPath) {
+    console.error('\n  Usage: thepopebot sync --fast <path-to-project>\n');
+    process.exit(1);
+  }
+
+  projectPath = path.resolve(projectPath);
+
+  if (!fs.existsSync(path.join(projectPath, 'package.json'))) {
+    console.error(`\n  Not a project directory (no package.json): ${projectPath}\n`);
+    process.exit(1);
+  }
+
+  // 1. Build JSX
+  console.log('\n  Building package...');
+  execSync('npm run build', { stdio: 'inherit', cwd: PACKAGE_DIR });
+
+  // 2. Mirror templates
+  console.log('\n  Mirroring templates...');
+  mirrorTemplates(projectPath);
+
+  // 3. Get running container ID
+  const container = execSync('docker compose ps -q event-handler', {
+    encoding: 'utf8',
+    cwd: projectPath,
+  }).trim();
+
+  if (!container) {
+    console.error('\n  event-handler container is not running. Use full sync instead.\n');
+    process.exit(1);
+  }
+
+  // 4. Copy package source into container's node_modules/thepopebot/
+  const PKG_DEST = '/app/node_modules/thepopebot';
+  const PACKAGE_DIRS = ['lib', 'api', 'config'];
+
+  console.log('\n  Copying package source into container...');
+  for (const dir of PACKAGE_DIRS) {
+    execSync(`docker exec ${container} rm -rf ${PKG_DEST}/${dir}`, { stdio: 'inherit' });
+    execSync(`docker cp ${path.join(PACKAGE_DIR, dir)} ${container}:${PKG_DEST}/${dir}`, { stdio: 'inherit' });
+  }
+  // Also copy package.json for exports resolution
+  execSync(`docker cp ${path.join(PACKAGE_DIR, 'package.json')} ${container}:${PKG_DEST}/package.json`, { stdio: 'inherit' });
+
+  // 5. Copy web/app/ source into container for next build
+  const webDir = path.join(PACKAGE_DIR, 'web');
+  console.log('\n  Copying web source into container...');
+  execSync(`docker cp ${path.join(webDir, 'app')} ${container}:/app/app`, { stdio: 'inherit' });
+  execSync(`docker cp ${path.join(webDir, 'postcss.config.mjs')} ${container}:/app/postcss.config.mjs`, { stdio: 'inherit' });
+
+  // 6. Run next build inside the container
+  console.log('\n  Building Next.js inside container...');
+  execSync(`docker exec ${container} ./node_modules/.bin/next build`, { stdio: 'inherit' });
+
+  // 7. Clean up web source from container (not needed at runtime)
+  execSync(`docker exec ${container} rm -rf /app/app`, { stdio: 'inherit' });
+
+  // 8. Restart PM2
+  console.log('\n  Restarting server...');
+  execSync(`docker exec ${container} pm2 restart all`, { stdio: 'inherit' });
+
+  console.log('\n  Fast synced!\n');
+}
+
 export async function sync(projectPath) {
   if (!projectPath) {
     console.error('\n  Usage: thepopebot sync <path-to-project>\n');

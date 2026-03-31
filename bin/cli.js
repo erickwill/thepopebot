@@ -57,6 +57,7 @@ Commands:
   reset [file]                      Restore a template file (or list available templates)
   diff [file]                       Show differences between project files and package templates
   sync <path>                       Sync local package to a test install (build, pack, Docker)
+  sync --fast <path>                Fast sync — copy source into running container, rebuild .next
   set-var <KEY> [VALUE]             Set a GitHub repository variable
   user:password <email>             Change a user's password
 `);
@@ -787,8 +788,15 @@ switch (command) {
     await upgrade();
     break;
   case 'sync': {
-    const { sync } = await import('./sync.js');
-    await sync(args[0]);
+    const fast = args.includes('--fast');
+    const syncArgs = args.filter(a => a !== '--fast');
+    if (fast) {
+      const { syncFast } = await import('./sync.js');
+      await syncFast(syncArgs[0]);
+    } else {
+      const { sync } = await import('./sync.js');
+      await sync(syncArgs[0]);
+    }
     break;
   }
   case 'set-var':
