@@ -248,6 +248,7 @@ async function init() {
     const pkg = {
       name: dirName,
       private: true,
+      type: 'module',
       scripts: {
         setup: 'thepopebot setup',
         'setup-telegram': 'thepopebot setup-telegram',
@@ -260,7 +261,15 @@ async function init() {
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
     console.log('  Created package.json');
   } else {
-    console.log('  Skipped package.json (already exists)');
+    // Ensure "type": "module" is set for ESM support
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+    if (!pkg.type) {
+      pkg.type = 'module';
+      fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+      console.log('  Added "type": "module" to package.json');
+    } else {
+      console.log('  Skipped package.json (already exists)');
+    }
   }
 
   // Create default skill activation symlinks
