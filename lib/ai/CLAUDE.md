@@ -77,3 +77,13 @@ Three-layer parser for Claude Code agents running in headless Docker containers:
    - Non-JSON lines (e.g. `NO_CHANGES`, `AGENT_FAILED`): wrapped as plain text events
 
 `parseHeadlessStream(dockerLogStream)` is an async generator consuming `http.IncomingMessage`. `mapLine()` is also reused by `lib/cluster/stream.js` for worker log parsing.
+
+### Adding a New Agent Mapper (line-mappers.js)
+
+Each coding agent CLI has its own mapper function (`mapClaudeCodeLine`, `mapPiLine`, `mapGeminiLine`, `mapCodexLine`, `mapOpenCodeLine`, `mapKimiLine`). When adding a new agent:
+
+1. Create `mapXxxLine(parsed)` in `line-mappers.js` that returns an array of `{ type, ... }` events
+2. Register it in `headless-stream.js`: add to imports, re-exports, and the `mapperMap` object
+3. Map the agent's JSON output to three event types: `{ type: 'text', text }`, `{ type: 'tool-call', toolCallId, toolName, args }`, `{ type: 'tool-result', toolCallId, result }`
+4. Return `[{ type: 'skip' }]` for noise events (session init, rate limits, etc.) to suppress them without triggering the unknown fallback
+5. **CRITICAL: `_resultSummary` must be set.** At least one text event must include `_resultSummary: text`. This is the value the `coding_agent` tool returns to LangGraph — without it, the LLM receives only `"Task completed successfully."` and has no context about what the container did. Agents with a dedicated end-of-run event (Claude Code's `type: "result"`, Pi's `agent_end`) set it there. Agents without one (Kimi, OpenCode) set it on assistant text events so the last one wins.
